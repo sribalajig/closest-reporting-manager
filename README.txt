@@ -6,6 +6,8 @@ USAGE
 
 	* You can add people to the organization by selecting "1". Once you add a person, you can see them in the org chart.
 
+	* You can check the nearest reporting manager for any two employees by selecting "2". You will be prompted for the names of the two employees.
+
 	* You can exit the shell by typing "e" in the main menu.
 
 	* If at any time you are stuck, press enter and you will be redirected to something sensible.
