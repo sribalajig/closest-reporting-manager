@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"closest-reporting-manager/models"
-	"closest-reporting-manager/services"
 	"fmt"
 	"os"
 )
@@ -52,7 +51,7 @@ func main() {
 
 		fmt.Println(fmt.Sprintf("This is is the org structure for %s", org.Name))
 
-		services.Bfs(org.CEO)
+		org.PrintLevels()
 
 		fmt.Println()
 		fmt.Println("What would you like to do now?")
@@ -83,7 +82,7 @@ func AddEmployee() {
 
 	newEmp := getString()
 
-	existing := services.Dfs(org.CEO, newEmp)
+	existing := org.Search(org.CEO, newEmp)
 
 	if existing != nil {
 		fmt.Println(fmt.Sprintf("You entered '%s'. This person already exists in the org.", existing.Name))
@@ -99,7 +98,7 @@ func AddEmployee() {
 
 	manager := getString()
 
-	existing = services.Dfs(org.CEO, manager)
+	existing = org.Search(org.CEO, manager)
 
 	if existing == nil {
 		fmt.Println(fmt.Sprintf("You entered '%s' as the reporting manager for '%s'.There is no such employee in the org", manager, newEmp))
@@ -125,7 +124,7 @@ func FindClosestManager() {
 
 	empOne := getString()
 
-	found := services.Dfs(org.CEO, empOne)
+	found := org.Search(org.CEO, empOne)
 
 	if found == nil {
 		fmt.Println(fmt.Sprintf("You entered '%s', this person does not exist in the org", empOne))
@@ -139,7 +138,7 @@ func FindClosestManager() {
 
 	empTwo := getString()
 
-	found = services.Dfs(org.CEO, empTwo)
+	found = org.Search(org.CEO, empTwo)
 
 	if found == nil {
 		fmt.Println(fmt.Sprintf("You entered '%s', this person does not exist in the org", empTwo))
@@ -149,7 +148,7 @@ func FindClosestManager() {
 		return
 	}
 
-	commonManager := services.FindLeastCommonAncestor(org.CEO, empOne, empTwo)
+	commonManager := org.FindClosestCommonManager(empOne, empTwo)
 
 	fmt.Println()
 
