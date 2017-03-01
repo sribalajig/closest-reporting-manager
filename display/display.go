@@ -27,7 +27,25 @@ func Input(prompt string) string {
 
 	fmt.Println()
 
-	return GetString()
+	var input string
+
+	for {
+		input = GetString()
+
+		if input != "" {
+			break
+		} else {
+			fmt.Println()
+
+			fmt.Println("Looks like you entered a blank name. That's invalid!")
+
+			fmt.Println()
+
+			fmt.Println(prompt)
+		}
+	}
+
+	return input
 }
 
 func Inform(information string) {
@@ -38,10 +56,6 @@ func Inform(information string) {
 	fmt.Println()
 }
 
-func ShowResult(result string) {
-
-}
-
 func ShowMenu(menu []string) {
 	fmt.Println()
 
@@ -50,6 +64,7 @@ func ShowMenu(menu []string) {
 	fmt.Println()
 
 	for _, menuItem := range menu {
+		fmt.Println()
 		fmt.Println(menuItem)
 	}
 
