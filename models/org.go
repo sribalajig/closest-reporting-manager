@@ -83,7 +83,6 @@ func (org *Org) PrintLevels() {
 		fmt.Print(" | ")
 
 		for _, report := range item.Employee.Reports {
-
 			if report != nil {
 				q.Enqueue(report, item.Level+1)
 			}

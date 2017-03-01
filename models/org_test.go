@@ -59,7 +59,7 @@ var org = Org{
 	CEO: ceo,
 }
 
-var testCases = []struct {
+var closestCommonManagerTestCases = []struct {
 	empOne         string
 	empTwo         string
 	expectedResult string
@@ -107,8 +107,8 @@ var testCases = []struct {
 }
 
 /*Runs the least common ancestor algorithm across different test cases*/
-func Test_LeastCommonAncestor(t *testing.T) {
-	for _, testCase := range testCases {
+func Test_FindClosestCommonManager(t *testing.T) {
+	for _, testCase := range closestCommonManagerTestCases {
 		lca := org.FindClosestCommonManager(testCase.empOne, testCase.empTwo)
 
 		if lca == nil && testCase.expectedResult != "" {
@@ -123,7 +123,32 @@ func Test_LeastCommonAncestor(t *testing.T) {
 	}
 }
 
-/*This test prints the org by levels, run the test to see the magic :)*/
-func Test_BFS(t *testing.T) {
+/*This test prints the org by levels, run the test to see the results*/
+func Test_PrintLevels(t *testing.T) {
 	org.PrintLevels()
+}
+
+var searchTestCases = []struct {
+	name     string
+	expected bool
+}{
+	{"elon musk", true},
+	{"ratan tata", false},
+	{"bill gates", true},
+	{"steve jobs", true},
+	{"steve", false},
+}
+
+/*Tests the search algorithm*/
+func Test_Search(t *testing.T) {
+	for _, testCase := range searchTestCases {
+		result := org.Search(org.CEO, testCase.name)
+
+		if testCase.expected && result == nil {
+			t.Errorf("Expected to find '%s', but did not find", testCase.name)
+			t.Fail()
+		} else if !testCase.expected && result != nil {
+			t.Errorf("Expected to not find '%s', but found", testCase.name)
+		}
+	}
 }
