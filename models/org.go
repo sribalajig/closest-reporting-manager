@@ -4,13 +4,15 @@ import (
 	"fmt"
 )
 
+/*Org represents the organization as a tree*/
 type Org struct {
 	Name string
 	CEO  *Employee
 }
 
+/*FindClosestCommonManager takes two employee names and finds the closest manager*/
 func (org *Org) FindClosestCommonManager(empOne string, empTwo string) *Employee {
-	result := find(org.CEO, empOne, empTwo)
+	result := findLeastCommonAncestor(org.CEO, empOne, empTwo)
 
 	if result == nil {
 		return result
@@ -43,6 +45,7 @@ func (org *Org) FindClosestCommonManager(empOne string, empTwo string) *Employee
 	return result
 }
 
+/*Search does a depth first search on the org tree*/
 func (org *Org) Search(root *Employee, searchFor string) *Employee {
 	if root == nil {
 		return root
@@ -63,6 +66,7 @@ func (org *Org) Search(root *Employee, searchFor string) *Employee {
 	return nil
 }
 
+/*PrintLevels does a level order traversal of the org tree*/
 func (org *Org) PrintLevels() {
 	q := &Queue{}
 
@@ -92,7 +96,9 @@ func (org *Org) PrintLevels() {
 	fmt.Println()
 }
 
-func find(manager *Employee, empOne string, empTwo string) *Employee {
+/*Recursive function which finds the least common ancestor
+between two given nodes in the org tree*/
+func findLeastCommonAncestor(manager *Employee, empOne string, empTwo string) *Employee {
 	if manager == nil {
 		return nil
 	}
@@ -105,7 +111,7 @@ func find(manager *Employee, empOne string, empTwo string) *Employee {
 	var temp *Employee
 
 	for _, child := range manager.Reports {
-		result := find(child, empOne, empTwo)
+		result := findLeastCommonAncestor(child, empOne, empTwo)
 
 		if result != nil {
 			count++

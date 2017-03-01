@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"closest-reporting-manager/display"
 	"closest-reporting-manager/models"
+	"closest-reporting-manager/org-service"
 	"fmt"
 	"os"
 )
@@ -10,28 +12,20 @@ import (
 var org models.Org
 
 func init() {
-	org = models.Org{
-		Name: "bureaucr.at",
-	}
+	org = service.Create("bureaucr.at")
 }
 
 func main() {
-	fmt.Print("\033[H\033[2J")
+	display.ClearScreen()
 
-	fmt.Println(fmt.Sprintf("Welcome! This program lets manage the org tree for %s", org.Name))
+	display.Inform(fmt.Sprintf("Welcome! This program lets manage the org tree for %s", org.Name))
 
-	fmt.Println()
+	display.Prompt("Press ENTER to get started")
 
-	fmt.Println(fmt.Sprintf("Press ENTER key to get started"))
-
-	getChar()
-
-	fmt.Print("\033[H\033[2J")
+	display.ClearScreen()
 
 	if org.CEO == nil {
-		fmt.Println(fmt.Sprintf("Looks like %s does not have a CEO. Press ENTER key to add your CEO.", org.Name))
-
-		getChar()
+		display.Prompt(fmt.Sprintf("Looks like %s does not have a CEO. Press ENTER key to add your CEO.", org.Name))
 
 		fmt.Println("Whats your CEO's name?")
 
@@ -41,29 +35,24 @@ func main() {
 
 		org.CEO = &ceo
 
-		fmt.Println()
+		display.Inform(fmt.Sprintf("Great! %s was added the CEO of %s.", ceo.Name, org.Name))
 
-		fmt.Println(fmt.Sprintf("Great! %s was added the CEO of %s.", ceo.Name, org.Name))
+		display.Prompt("Press ENTER for the menu")
 	}
 
 	for {
-		fmt.Print("\033[H\033[2J")
+		display.ClearScreen()
 
-		fmt.Println(fmt.Sprintf("This is is the org structure for %s", org.Name))
+		display.Inform(fmt.Sprintf("This is is the org structure for %s", org.Name))
 
 		org.PrintLevels()
 
-		fmt.Println()
-		fmt.Println("What would you like to do now?")
-		fmt.Println()
+		display.ShowMenu([]string{
+			"\tTo add a person to the org, PRESS 1",
+			"\tTo find closest reporting manager, PRESS 2",
+		})
 
-		fmt.Println("\tTo add a person to the org, PRESS 1")
-		fmt.Println()
-		fmt.Println("\tTo find closest reporting manager, PRESS 2")
-
-		fmt.Println()
-
-		option := getChar()
+		option := display.GetChar()
 
 		if string(option) == "1" {
 			AddEmployee()
@@ -76,45 +65,33 @@ func main() {
 }
 
 func AddEmployee() {
-	fmt.Print("\033[H\033[2J")
+	display.ClearScreen()
 
-	fmt.Println("Whats the employees name")
-
-	newEmp := getString()
+	newEmp := display.Input("What's the employees name?")
 
 	existing := org.Search(org.CEO, newEmp)
 
 	if existing != nil {
-		fmt.Println(fmt.Sprintf("You entered '%s'. This person already exists in the org.", existing.Name))
-
-		getChar()
+		display.Prompt(fmt.Sprintf("You entered '%s'. This person already exists in the org.", existing.Name))
 
 		return
 	}
 
-	fmt.Println()
-
-	fmt.Println("Whom does this person report to")
-
-	manager := getString()
+	manager := display.Input("Whom does this person report to")
 
 	existing = org.Search(org.CEO, manager)
 
 	if existing == nil {
-		fmt.Println(fmt.Sprintf("You entered '%s' as the reporting manager for '%s'.There is no such employee in the org", manager, newEmp))
-
-		getChar()
+		display.Prompt(fmt.Sprintf("You entered '%s' as the reporting manager for '%s'.There is no such employee in the org", manager, newEmp))
 
 		return
 	}
 
 	existing.AddReport(newEmp)
 
-	fmt.Println()
+	display.Inform(fmt.Sprintf("'%s' was added the org!", newEmp))
 
-	fmt.Println(fmt.Sprintf("'%s' was added the org!", newEmp))
-
-	getChar()
+	display.Prompt("Press ENTER to return to the main menu")
 }
 
 func FindClosestManager() {
